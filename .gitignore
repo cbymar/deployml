@@ -131,4 +131,11 @@ ignoreland/
 *.csv
 *.ipynb
 *.zip
+*.html
+*.pkl
+*.DS_Store
+.idea/
+Dockerfile_original
+SVC_norm
+XGBoost_norm
 
