@@ -30,9 +30,9 @@ functions:
   hello:
     handler: handler.hello
     memorySize: 128
-    timeout: 30
+    timeout: 20
 
     events:
       - httpApi:
-          path: hello-path1
+          path: /hello-path1
           method: get

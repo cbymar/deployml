@@ -139,4 +139,4 @@ Dockerfile_original
 SVC_norm
 XGBoost_norm
 LogisticRegression
-
+*.json
