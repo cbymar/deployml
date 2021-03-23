@@ -1,25 +1,27 @@
-service: diabetespredictionFinal
-
+service: diabetes_prediction_final
+# app and org for use with dashboard.serverless.com
+#app: your-app-name
+#org: your-org-name
 
 provider:
   name: aws
-  runtime: python3.7
-
-# you can overwrite defaults here
+  runtime: python3.8
   stage: dev
   region: us-west-2
 
+
 package:
+#  include:
+#    - include-me.py
+#    - include-me-dir/**
   exclude:
-    - .vscode/**
-    - node_modules/**
-    - (*).mov
-    
+    - .idea/**
+    - node_module/**
 
 functions:
   hello:
     handler: handler.predict
-    memorySize : 512
+    memorySize: 512
     timeout: 25
     events:
       - http:
@@ -28,7 +30,7 @@ functions:
           request:
             parameters:
               queryString:
-                pregnancies: true
+                Pregnancies: true
                 glucose: true
                 BP: true
                 SkinThickness: true
@@ -36,15 +38,23 @@ functions:
                 BMI: true
                 DiabetesPedigreeFunction: true
                 Age: true
-                
-
-#      
 
 plugins:
   - serverless-python-requirements
-
-
 custom:
   pythonRequirements:
     dockerizePip: true
     slim: true
+
+
+
+
+
+
+
+
+
+
+
+
+

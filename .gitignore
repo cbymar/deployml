@@ -140,3 +140,8 @@ SVC_norm
 XGBoost_norm
 LogisticRegression
 *.json
+Random Forest
+RandomForest
+XGBoost
+node_modules/
+
