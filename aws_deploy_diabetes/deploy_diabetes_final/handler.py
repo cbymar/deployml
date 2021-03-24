@@ -39,3 +39,25 @@ def predict(event, context):
     }
 
     return response
+
+
+def do_main():
+    event = {
+        "queryStringParameters": {
+            "Pregnancies": 1,
+            "glucose": 12,
+            "BP": 120,
+            "SkinThickness": 1,
+            "Insulin": 2,
+            "BMI": 23,
+            "DiabetesPedigreeFunction": 21,
+            "Age": 54
+
+        }
+    }
+
+    res = predict(event, None)
+    print(res)
+
+
+do_main()
