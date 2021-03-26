@@ -1,64 +1,22 @@
-service: diabetespredictionfinal
-# app and org for use with dashboard.serverless.com
-#app: your-app-name
-#org: your-org-name
+service: diabetes-prediction
 
 provider:
   name: aws
   runtime: python3.8
-  stage: dev
   region: us-west-2
-
-
-package:
-#  include:
-#    - include-me.py
-#    - include-me-dir/**
-  excludeDevDependencies: true
-  exclude:
-    - .idea/**
-    - node_modules/**
-    - .vscode/**
-    - venvdiab/**
-    - venv/**
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - sagemaker:InvokeEndpoint
+      Resource: "arn:aws:sagemaker:us-west-2:349085393863:endpoint/diabetes-prediction"
+  environment:
+    SAGEMAKER_ENDPOINT_NAME: "diabetes-prediction"
 
 functions:
   hello:
-    handler: handler.predict
-    memorySize: 512
-    timeout: 25
+    handler: handler.detectDiabetes
     events:
       - http:
-          path: predict-diabetes
-          method: get
-          request:
-            parameters:
-              queryString:
-                Pregnancies: true
-                glucose: true
-                BP: true
-                SkinThickness: true
-                Insulin: true
-                BMI: true
-                DiabetesPedigreeFunction: true
-                Age: true
-
-plugins:
-  - serverless-python-requirements
-custom:
-  pythonRequirements:
-    dockerizePip: true
-    slim: true
-
-
-
-
-
-
-
-
-
-
-
-
-
+          path: sagemaker
+          method: post
+          cors: true

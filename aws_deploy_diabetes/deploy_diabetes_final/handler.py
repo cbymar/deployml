@@ -1,63 +1,46 @@
+import io
 import json
-import pickle
+import os
+import boto3
+from urllib.request import Request, urlopen
 
-# 'Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age'
+runtime=boto3.client("runtime.sagemaker")
+SAGEMAKER_ENDPOINT_NAME: os.environ["SAGEMAKER_ENDPOINT_NAME"]
 
-model = pickle.load(open("./RandomForest", "rb"))
+def detectDiabetes(event, context):
 
-
-def predict(event, context):
     body = {
         "message": "ok",
     }
 
     params = event["queryStringParameters"]
 
-    Pregnancies = float(params['Pregnancies'])
-    glucose = float(params['glucose'])
-    BP = float(params['BP'])
-    SkinThickness = float(params['SkinThickness'])
-    Insulin = float(params['Insulin'])
-    BMI = float(params['BMI'])
-    DiabetesPedigreeFunction = float(params['DiabetesPedigreeFunction'])
-    Age = float(params['Age'])
+    Pregnancies = int(params['Pregnancies'])
+    glucose = int(params['glucose'])
+    BP = int(params['BP'])
+    SkinThickness = int(params['SkinThickness'])
+    Insulin = int(params['Insulin'])
+    BMI = int(params['BMI'])
+    DiabetesPedigreeFunction = int(params['DiabetesPedigreeFunction'])
+    Age = int(params['Age'])
 
-    input_data = [[Pregnancies, glucose, BP, SkinThickness, Insulin, BMI, DiabetesPedigreeFunction, Age]]
+    input_data = [Pregnancies, glucose, BP, SkinThickness, Insulin, BMI, DiabetesPedigreeFunction, Age]
 
-    pred = model.predict(input_data)[0]
+    body = ",".join([str(item) for item in input_data])
 
-    body['prediction'] = int(pred)
-    print(params)
-    print("Prediction: ", pred)
+    response = runtime.invoke_endpoint(EndpointName="diabetes-prediction",
+                                       ContentType="text/csv",
+                                       Body=body.encode("utf-8"))
+
+    result = response["Body"].read().decode("utf-8")
+## the .read() method is required; we apply that to the stream
 
     response = {
         "statusCode": 200,
-        "body": json.dumps(body),
+        "body": json.dumps(round(float(result))),
         "headers": {
             "Access-Control-Allow-Origin": "*"
         }
     }
 
     return response
-
-
-def do_main():
-    event = {
-        "queryStringParameters": {
-            "Pregnancies": 1,
-            "glucose": 12,
-            "BP": 120,
-            "SkinThickness": 1,
-            "Insulin": 2,
-            "BMI": 23,
-            "DiabetesPedigreeFunction": 21,
-            "Age": 54
-
-        }
-    }
-
-    res = predict(event, None)
-    print(res)
-
-
-do_main()
