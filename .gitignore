@@ -129,7 +129,6 @@ dmypy.json
 .pyre/
 ignoreland/
 *.csv
-*.ipynb
 *.zip
 *.html
 *.pkl
